@@ -1,0 +1,29 @@
+{
+  "name": "lobby-server",
+  "version": "0.0.0",
+  "description": "A simple HTTP server for game lobbies",
+  "main": "index.js",
+  "author": "Greyson Richey",
+  "license": "MIT",
+  "dependencies": {
+    "dayjs": "^1.9.4",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1"
+  },
+  "engines": {
+    "node": ">=12.19.0"
+  },
+  "scripts": {
+    "start": "nodemon index.js",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "eslint": "^7.12.1",
+    "eslint-config-standard": "^15.0.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.2",
+    "nodemon": "^2.0.6"
+  }
+}
