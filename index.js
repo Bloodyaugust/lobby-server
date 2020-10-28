@@ -6,7 +6,7 @@ const express = require('express')
 
 const app = express()
 const lobbyNameLength = 1 * 2
-const lobbyTimeout = [10, 'second']
+const lobbyTimeout = [parseInt(process.env.LOBBY_TIMEOUT_SECONDS), 'second']
 const port = process.env.HOST_PORT
 
 const lobbyTimeoutInterval = dayjs().add(...lobbyTimeout).valueOf() - dayjs().valueOf()
