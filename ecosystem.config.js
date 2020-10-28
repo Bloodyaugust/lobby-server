@@ -3,9 +3,6 @@ module.exports = {
     name: 'Lobby Server',
     script: 'index.js',
     watch: '.'
-  }, {
-    script: './service-worker/',
-    watch: ['./service-worker']
   }],
 
   deploy : {
