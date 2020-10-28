@@ -34,20 +34,20 @@ jobs:
       - checkout
 
       - run:
-        name: install
-        command: yarn install
+          name: install
+          command: yarn install
 
       - add_ssh_keys:
-        fingerprints:
-          - "e9:82:1d:cc:68:5a:16:5e:ac:53:72:e5:17:03:b5:ca"
+          fingerprints:
+            - "e9:82:1d:cc:68:5a:16:5e:ac:53:72:e5:17:03:b5:ca"
 
       - run:
-        name: insert public key
-        command: echo "$deploy_public_key" > ~/.ssh/lobby_server_deploy2_rsa.pub
+          name: insert public key
+          command: echo "$deploy_public_key" > ~/.ssh/lobby_server_deploy2_rsa.pub
 
       - run:
-        name: deploy
-        command: yarn pm2 deploy ecosystem.config.js production
+          name: deploy
+          command: yarn pm2 deploy ecosystem.config.js production
 
 workflows:
   version: 2
