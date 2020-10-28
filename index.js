@@ -47,12 +47,6 @@ app.get('/', (req, res) => {
   }))
 })
 
-function log () {
-  if (process.env.NODE_ENV !== 'production') {
-    console.log(...arguments)
-  }
-}
-
 app.get('/lobby/:name', (req, res) => {
   res.json(formatLobby(lobbies.find(lobby => lobby.name === req.params.name)) || {})
 })
@@ -78,10 +72,10 @@ app.get('/new', (req, res) => {
 })
 
 app.listen(port, () => {
-  log(`Example app listening at http://localhost:${port}`)
+  console.log(`Lobby Server listening at http://localhost:${port}`)
 })
 
 setInterval(() => {
   lobbies = lobbies.filter(lobby => lobby.expires.isAfter(dayjs()))
-  log(lobbies)
+  console.log(lobbies)
 }, lobbyTimeoutInterval)
