@@ -76,8 +76,10 @@ const server = app.listen(port, () => {
 })
 
 const cleanupLobbiesInterval = setInterval(() => {
+  const initialLobbyLength = lobbies.length
+
   lobbies = lobbies.filter(lobby => lobby.expires.isAfter(dayjs()))
-  console.log(lobbies)
+  console.log(`Removed ${initialLobbyLength - lobbies.length}/${initialLobbyLength} lobbies. ${lobbies.length} lobbies currently active.`)
 }, lobbyTimeoutInterval)
 
 process.on('SIGINT', () => {
