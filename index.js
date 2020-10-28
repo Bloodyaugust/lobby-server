@@ -71,11 +71,22 @@ app.get('/new', (req, res) => {
   res.json(formatLobby(newLobby))
 })
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
+  process.send('ready')
+
   console.log(`Lobby Server listening at http://localhost:${port}`)
 })
 
-setInterval(() => {
+const cleanupLobbiesInterval = setInterval(() => {
   lobbies = lobbies.filter(lobby => lobby.expires.isAfter(dayjs()))
   console.log(lobbies)
 }, lobbyTimeoutInterval)
+
+process.on('SIGINT', () => {
+  clearInterval(cleanupLobbiesInterval)
+
+  server.close(() => {
+    console.log('Received SIGINT: Lobby Server shutting down...')
+    process.exit(0)
+  })
+})
