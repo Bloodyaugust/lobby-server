@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build_run_test:
+  build:
     docker:
       - image: greysonr/lobby_server:0.0.1
 
