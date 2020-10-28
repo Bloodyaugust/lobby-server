@@ -14,7 +14,7 @@ module.exports = {
       path : '/var/www/lobby-server',
       key  : '~/.ssh/lobby_server_deploy_rsa.pub',
       'pre-deploy-local': '',
-      'post-deploy' : 'yarn install && mv .env.prod .env && pm2 startOrReload ecosystem.config.js --env production --wait-ready',
+      'post-deploy' : 'yarn install && mv .env.prod .env && pm2 startOrReload ecosystem.config.js --env production',
       'pre-setup': ''
     }
   }
