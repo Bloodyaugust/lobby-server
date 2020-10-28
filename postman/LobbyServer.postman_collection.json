@@ -7,6 +7,38 @@
 	"item": [
 		{
 			"name": "Lobbies",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3d0b17bb-43ad-440d-8041-1fab8d16fdfb",
+						"exec": [
+							"pm.sendRequest(`${pm.environment.get(\"API_ROOT\")}new?host=127.0.0.1&private=true`);\r",
+							"pm.sendRequest(`${pm.environment.get(\"API_ROOT\")}new?host=127.0.0.1`);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "5944addb-ba1a-4713-9d29-3590f8fc16c1",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returns only public lobbies\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(jsonData.length).to.eql(1);\r",
+							"    pm.expect(jsonData[0].private).to.eql(false);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -39,6 +71,7 @@
 							"    pm.expect(jsonData.keepAlive).to.not.be.undefined;\r",
 							"    pm.expect(jsonData.name.length).to.eql(4);\r",
 							"    pm.expect(jsonData.host).to.eql(pm.globals.get(\"host\"));\r",
+							"    pm.expect(jsonData.private).to.eql(false);\r",
 							"\r",
 							"    pm.globals.set(\"lastName\", jsonData.name);\r",
 							"});\r",
@@ -78,6 +111,81 @@
 						{
 							"key": "data",
 							"value": "{{data}}"
+						},
+						{
+							"key": "private",
+							"value": "",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Create a new lobby"
+			},
+			"response": []
+		},
+		{
+			"name": "New Private Lobby",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a1a8a393-77db-4eb0-9cc0-cb44dde3f0bb",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Returns a new lobby object\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(jsonData.created).to.not.be.undefined;\r",
+							"    pm.expect(jsonData.keepAlive).to.not.be.undefined;\r",
+							"    pm.expect(jsonData.name.length).to.eql(4);\r",
+							"    pm.expect(jsonData.host).to.eql(pm.globals.get(\"host\"));\r",
+							"    pm.expect(jsonData.private).to.eql(true);\r",
+							"\r",
+							"    pm.globals.set(\"lastName\", jsonData.name);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d1986a2e-8c5c-446a-a7f6-7b2a5653e0f7",
+						"exec": [
+							"pm.globals.set(\"host\", \"127.0.0.1\");\r",
+							"pm.globals.set(\"data\", JSON.stringify({\r",
+							"    map: 'test-map',\r",
+							"    players: 6\r",
+							"}));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_ROOT}}new?host={{host}}&data={{data}}&private=true",
+					"host": [
+						"{{API_ROOT}}new"
+					],
+					"query": [
+						{
+							"key": "host",
+							"value": "{{host}}"
+						},
+						{
+							"key": "data",
+							"value": "{{data}}"
+						},
+						{
+							"key": "private",
+							"value": "true"
 						}
 					]
 				},

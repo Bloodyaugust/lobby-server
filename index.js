@@ -35,16 +35,16 @@ function lobbyFactory (req) {
 
   return {
     created: dayjs(),
+    data: req.query.data || {},
     expires: dayjs().add(...lobbyTimeout),
     host: req.query.host,
-    name: lobbyName
+    name: lobbyName,
+    private: req.query.private === 'true'
   }
 }
 
 app.get('/', (req, res) => {
-  res.json(lobbies.map(lobby => {
-    return formatLobby(lobby)
-  }))
+  res.json(lobbies.filter(lobby => !lobby.private).map(lobby => formatLobby(lobby)))
 })
 
 app.get('/lobby/:name', (req, res) => {
@@ -63,8 +63,6 @@ app.get('/lobby/:name/keepalive', (req, res) => {
 
 app.get('/new', (req, res) => {
   const newLobby = lobbyFactory(req)
-
-  newLobby.data = req.query.data
 
   lobbies.push(newLobby)
 
