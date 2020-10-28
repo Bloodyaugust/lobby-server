@@ -43,7 +43,7 @@ jobs:
 
       - run:
           name: insert public key
-          command: echo "$deploy_public_key" > ~/.ssh/lobby_server_deploy2_rsa.pub
+          command: echo "$deploy_public_key" > ~/.ssh/lobby_server_deploy2_rsa.pem
 
       - run:
           name: add server to known_hosts

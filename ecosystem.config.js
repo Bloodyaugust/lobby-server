@@ -12,7 +12,7 @@ module.exports = {
       ref  : 'origin/master',
       repo : 'git@github.com:Bloodyaugust/lobby-server.git',
       path : '/var/www/lobby-server',
-      key  : '~/.ssh/lobby_server_deploy2_rsa.pub',
+      key  : '~/.ssh/lobby_server_deploy2_rsa.pem',
       'pre-deploy-local': '',
       'post-deploy' : 'yarn install && mv .env.prod .env && pm2 startOrReload ecosystem.config.js --env production',
       'pre-setup': ''
