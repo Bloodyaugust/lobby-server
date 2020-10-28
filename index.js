@@ -9,7 +9,22 @@ const lobbyNameLength = 1 * 2
 const lobbyTimeout = [10, 'second']
 const port = process.env.HOST_PORT
 
+const lobbyTimeoutInterval = dayjs().add(...lobbyTimeout).valueOf() - dayjs().valueOf()
+
 let lobbies = []
+
+function formatLobby (lobby) {
+  if (lobby) {
+    return {
+      ...lobby,
+      created: lobby.created.valueOf(),
+      expires: lobby.expires.valueOf(),
+      keepAlive: lobbyTimeoutInterval
+    }
+  }
+
+  return false
+}
 
 function lobbyFactory (req) {
   let lobbyName = crypto.randomBytes(lobbyNameLength).toString('hex').toUpperCase()
@@ -20,19 +35,15 @@ function lobbyFactory (req) {
 
   return {
     created: dayjs(),
+    expires: dayjs().add(...lobbyTimeout),
     host: req.query.host,
-    keepAlive: dayjs().add(...lobbyTimeout),
     name: lobbyName
   }
 }
 
 app.get('/', (req, res) => {
   res.json(lobbies.map(lobby => {
-    return {
-      alive: lobby.keepAlive.isAfter(dayjs()),
-      host: lobby.host,
-      name: lobby.name
-    }
+    return formatLobby(lobby)
   }))
 })
 
@@ -42,26 +53,28 @@ function log () {
   }
 }
 
-app.get('/keepalive', (req, res) => {
-  const lobby = lobbies.find(lobby => lobby.name === req.query.name)
-
-  if (lobby) {
-    lobby.keepAlive = dayjs().add(...lobbyTimeout)
-  }
-
-  res.json(lobby || {})
+app.get('/lobby/:name', (req, res) => {
+  res.json(formatLobby(lobbies.find(lobby => lobby.name === req.params.name)) || {})
 })
 
-app.get('/lobby/:name', (req, res) => {
-  res.json(lobbies.find(lobby => lobby.name === req.params.name) || {})
+app.get('/lobby/:name/keepalive', (req, res) => {
+  const lobby = lobbies.find(lobby => lobby.name === req.params.name)
+
+  if (lobby) {
+    lobby.expires = dayjs().add(...lobbyTimeout)
+  }
+
+  res.json(formatLobby(lobby) || {})
 })
 
 app.get('/new', (req, res) => {
   const newLobby = lobbyFactory(req)
 
+  newLobby.data = req.query.data
+
   lobbies.push(newLobby)
 
-  res.json(newLobby)
+  res.json(formatLobby(newLobby))
 })
 
 app.listen(port, () => {
@@ -69,6 +82,6 @@ app.listen(port, () => {
 })
 
 setInterval(() => {
-  lobbies = lobbies.filter(lobby => lobby.keepAlive.isAfter(dayjs()))
+  lobbies = lobbies.filter(lobby => lobby.expires.isAfter(dayjs()))
   log(lobbies)
-}, dayjs().add(...lobbyTimeout).valueOf() - dayjs().valueOf())
+}, lobbyTimeoutInterval)

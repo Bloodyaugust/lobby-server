@@ -15,7 +15,8 @@
   },
   "scripts": {
     "start": "nodemon index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "newman run ./postman/LobbyServer.postman_collection.json -e ./postman/LobbyServerLocal.postman_environment.json"
   },
   "devDependencies": {
     "eslint": "^7.12.1",
@@ -24,6 +25,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.2",
+    "newman": "^5.2.0",
     "nodemon": "^2.0.6"
   }
 }

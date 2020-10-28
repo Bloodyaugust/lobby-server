@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: greysonr/lobby_server:0.0.1
+
+    steps:
+      - checkout
+
+      - run:
+          name: install_and_start
+          command: |
+            yarn install
+            yarn start
+    
+      - run:
+        name: test
+        command: |
+          yarn test

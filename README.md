@@ -10,3 +10,11 @@ This server is currently the opposite of secure, and should not be considered pr
 ## Developing
 
 `yarn install && yarn start`
+
+## Dockerfile
+
+To build:
+`docker build .circleci/images/lobby-server/ -t greysonr/lobby_server:<version number>`
+
+To push:
+`docker push greysonr/lobby_server:<tag name>`
