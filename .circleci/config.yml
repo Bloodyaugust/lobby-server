@@ -46,6 +46,10 @@ jobs:
           command: echo "$deploy_public_key" > ~/.ssh/lobby_server_deploy2_rsa.pub
 
       - run:
+          name: add server to known_hosts
+          command: echo "$SERVER_KNOWN_HOSTS_ENTRY" >> ~/.ssh/known_hosts
+
+      - run:
           name: deploy
           command: yarn pm2 deploy ecosystem.config.js production
 
