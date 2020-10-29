@@ -1,11 +1,13 @@
 require('dotenv').config()
 
 const crypto = require('crypto')
+const dgram = require('dgram')
 const dayjs = require('dayjs')
 const express = require('express')
 const rateLimit = require('express-rate-limit')
 
 const app = express()
+const dgramServer = dgram.createSocket('udp4')
 const lobbyNameLength = 1 * 2
 const lobbyKeyLength = 4 * 4
 const lobbyTimeout = [parseInt(process.env.LOBBY_TIMEOUT_SECONDS), 'second']
@@ -113,6 +115,22 @@ app.post('/lobby/:name', (req, res) => {
   res.json(formatLobby(lobby))
 })
 
+dgramServer.on('error', (err) => {
+  console.log(`DGRAM Server error: ${err}`)
+  dgramServer.close()
+})
+
+dgramServer.on('message', (msg, rinfo) => {
+  console.log(`DGRAM message received: ${msg} with rinfo: ${JSON.stringify(rinfo)}`)
+  dgramServer.send('test back', rinfo.port, rinfo.address)
+})
+
+dgramServer.on('listening', () => {
+  console.log(`DGRAM server listening: ${JSON.stringify(dgramServer.address())}`)
+})
+
+dgramServer.bind(31401)
+
 const server = app.listen(port, () => {
   process.send('ready')
 
@@ -128,6 +146,8 @@ const cleanupLobbiesInterval = setInterval(() => {
 
 process.on('SIGINT', () => {
   clearInterval(cleanupLobbiesInterval)
+
+  dgramServer.close()
 
   server.close(() => {
     console.log('Received SIGINT: Lobby Server shutting down...')
