@@ -28,12 +28,13 @@
 							"    pm.expect([200, 429].includes(pm.response.code)).to.eql(true);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Returns only public lobbies\", function () {\r",
+							"pm.test(\"Returns only public lobbies with no keys\", function () {\r",
 							"    if (pm.response.code !== 429) {\r",
 							"        var jsonData = pm.response.json();\r",
 							"\r",
 							"        jsonData.forEach(lobby => {\r",
 							"            pm.expect(lobby.private).to.eql(false);\r",
+							"            pm.expect(lobby.key).to.eql(undefined);\r",
 							"        });\r",
 							"    }\r",
 							"});"
@@ -76,8 +77,11 @@
 							"        pm.expect(jsonData.name.length).to.eql(4);\r",
 							"        pm.expect(jsonData.host).to.eql(pm.globals.get(\"host\"));\r",
 							"        pm.expect(jsonData.private).to.eql(false);\r",
+							"        pm.expect(jsonData.key.length).to.eql(32);\r",
 							"\r",
 							"        pm.globals.set(\"lastName\", jsonData.name);\r",
+							"        pm.globals.set(\"lastKey\", jsonData.key);\r",
+							"        pm.globals.set(\"lastPrivate\", jsonData.private);\r",
 							"    }\r",
 							"});\r",
 							""
@@ -150,7 +154,9 @@
 							"        pm.expect(jsonData.host).to.eql(pm.globals.get(\"host\"));\r",
 							"        pm.expect(jsonData.private).to.eql(true);\r",
 							"\r",
+							"        pm.globals.set(\"lastKey\", jsonData.key);\r",
 							"        pm.globals.set(\"lastName\", jsonData.name);\r",
+							"        pm.globals.set(\"lastPrivate\", jsonData.private);\r",
 							"    }\r",
 							"});\r",
 							""
@@ -300,6 +306,59 @@
 					]
 				},
 				"description": "Reset the keepalive timer for a lobby"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Lobby",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2abaa95a-db8e-40f3-a2c9-2f647b3425a0",
+						"exec": [
+							"pm.globals.set(\"data\", JSON.stringify({",
+							"    map: 'test-map-small',",
+							"    players: 12",
+							"}));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{API_ROOT}}lobby/:name?private=false&key={{lastKey}}&data={{data}}",
+					"host": [
+						"{{API_ROOT}}lobby"
+					],
+					"path": [
+						":name"
+					],
+					"query": [
+						{
+							"key": "private",
+							"value": "false"
+						},
+						{
+							"key": "key",
+							"value": "{{lastKey}}"
+						},
+						{
+							"key": "data",
+							"value": "{{data}}"
+						}
+					],
+					"variable": [
+						{
+							"key": "name",
+							"value": "{{lastName}}"
+						}
+					]
+				},
+				"description": "Update a lobbies private state and data"
 			},
 			"response": []
 		}

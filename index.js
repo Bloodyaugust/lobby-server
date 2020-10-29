@@ -7,6 +7,7 @@ const rateLimit = require('express-rate-limit')
 
 const app = express()
 const lobbyNameLength = 1 * 2
+const lobbyKeyLength = 4 * 4
 const lobbyTimeout = [parseInt(process.env.LOBBY_TIMEOUT_SECONDS), 'second']
 const port = process.env.HOST_PORT
 
@@ -29,15 +30,15 @@ const rootLimiter = rateLimit({
   max: 4
 })
 
-
 let lobbies = []
 
-function formatLobby (lobby) {
+function formatLobby (lobby, preserveKey) {
   if (lobby) {
     return {
       ...lobby,
       created: lobby.created.valueOf(),
       expires: lobby.expires.valueOf(),
+      key: preserveKey ? lobby.key : undefined,
       keepAlive: lobbyTimeoutInterval
     }
   }
@@ -57,6 +58,7 @@ function lobbyFactory (req) {
     data: req.query.data || {},
     expires: dayjs().add(...lobbyTimeout),
     host: req.query.host,
+    key: crypto.randomBytes(lobbyKeyLength).toString('hex'),
     name: lobbyName,
     private: req.query.private === 'true'
   }
@@ -85,7 +87,31 @@ app.get('/new', newLimiter, (req, res) => {
 
   lobbies.push(newLobby)
 
-  res.json(formatLobby(newLobby))
+  res.json(formatLobby(newLobby, true))
+})
+
+app.post('/lobby/:name', (req, res) => {
+  if (!req.query.key) {
+    throw new Error('No key provided')
+  }
+
+  let lobby = lobbies.find(lobby => lobby.name === req.params.name)
+
+  if (!lobby) {
+    throw new Error('Lobby not found')
+  }
+
+  if (lobby.key !== req.query.key) {
+    throw new Error('Lobby key incorrect')
+  }
+
+  lobby = {
+    ...lobby,
+    data: req.query.data || lobby.data,
+    private: req.query.private ? req.query.private === 'true' : lobby.private
+  }
+
+  res.json(formatLobby(lobby))
 })
 
 const server = app.listen(port, () => {
