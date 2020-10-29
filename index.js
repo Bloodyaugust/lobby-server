@@ -3,6 +3,7 @@ require('dotenv').config()
 const crypto = require('crypto')
 const dayjs = require('dayjs')
 const express = require('express')
+const rateLimit = require('express-rate-limit')
 
 const app = express()
 const lobbyNameLength = 1 * 2
@@ -10,6 +11,24 @@ const lobbyTimeout = [parseInt(process.env.LOBBY_TIMEOUT_SECONDS), 'second']
 const port = process.env.HOST_PORT
 
 const lobbyTimeoutInterval = dayjs().add(...lobbyTimeout).valueOf() - dayjs().valueOf()
+
+const getLobbyLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20
+})
+const keepAliveLimiter = rateLimit({
+  windowMs: lobbyTimeoutInterval,
+  max: 4
+})
+const newLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 2
+})
+const rootLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 4
+})
+
 
 let lobbies = []
 
@@ -43,15 +62,15 @@ function lobbyFactory (req) {
   }
 }
 
-app.get('/', (req, res) => {
+app.get('/', rootLimiter, (req, res) => {
   res.json(lobbies.filter(lobby => !lobby.private).map(lobby => formatLobby(lobby)))
 })
 
-app.get('/lobby/:name', (req, res) => {
+app.get('/lobby/:name', getLobbyLimiter, (req, res) => {
   res.json(formatLobby(lobbies.find(lobby => lobby.name === req.params.name)) || {})
 })
 
-app.get('/lobby/:name/keepalive', (req, res) => {
+app.get('/lobby/:name/keepalive', keepAliveLimiter, (req, res) => {
   const lobby = lobbies.find(lobby => lobby.name === req.params.name)
 
   if (lobby) {
@@ -61,7 +80,7 @@ app.get('/lobby/:name/keepalive', (req, res) => {
   res.json(formatLobby(lobby) || {})
 })
 
-app.get('/new', (req, res) => {
+app.get('/new', newLimiter, (req, res) => {
   const newLobby = lobbyFactory(req)
 
   lobbies.push(newLobby)

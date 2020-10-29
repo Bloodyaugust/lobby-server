@@ -24,16 +24,18 @@
 					"script": {
 						"id": "5944addb-ba1a-4713-9d29-3590f8fc16c1",
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 200 or 429\", function () {\r",
+							"    pm.expect([200, 429].includes(pm.response.code)).to.eql(true);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Returns only public lobbies\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
+							"    if (pm.response.code !== 429) {\r",
+							"        var jsonData = pm.response.json();\r",
 							"\r",
-							"    jsonData.forEach(lobby => {\r",
-							"        pm.expect(lobby.private).to.eql(false);\r",
-							"    });\r",
+							"        jsonData.forEach(lobby => {\r",
+							"            pm.expect(lobby.private).to.eql(false);\r",
+							"        });\r",
+							"    }\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -61,20 +63,22 @@
 					"script": {
 						"id": "4381063b-0d3d-44dc-b814-9d6875a9626e",
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 200 or 429\", function () {\r",
+							"    pm.expect([200, 429].includes(pm.response.code)).to.eql(true);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Returns a new lobby object\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
+							"    if (pm.response.code !== 429) {\r",
+							"        var jsonData = pm.response.json();\r",
 							"\r",
-							"    pm.expect(jsonData.created).to.not.be.undefined;\r",
-							"    pm.expect(jsonData.keepAlive).to.not.be.undefined;\r",
-							"    pm.expect(jsonData.name.length).to.eql(4);\r",
-							"    pm.expect(jsonData.host).to.eql(pm.globals.get(\"host\"));\r",
-							"    pm.expect(jsonData.private).to.eql(false);\r",
+							"        pm.expect(jsonData.created).to.not.be.undefined;\r",
+							"        pm.expect(jsonData.keepAlive).to.not.be.undefined;\r",
+							"        pm.expect(jsonData.name.length).to.eql(4);\r",
+							"        pm.expect(jsonData.host).to.eql(pm.globals.get(\"host\"));\r",
+							"        pm.expect(jsonData.private).to.eql(false);\r",
 							"\r",
-							"    pm.globals.set(\"lastName\", jsonData.name);\r",
+							"        pm.globals.set(\"lastName\", jsonData.name);\r",
+							"    }\r",
 							"});\r",
 							""
 						],
@@ -132,20 +136,22 @@
 					"script": {
 						"id": "a1a8a393-77db-4eb0-9cc0-cb44dde3f0bb",
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 200 or 429\", function () {\r",
+							"    pm.expect([200, 429].includes(pm.response.code)).to.eql(true);\r",
 							"});\r",
 							"\r",
-							"pm.test(\"Returns a new lobby object\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
+							"pm.test(\"Returns a new private lobby object\", function () {\r",
+							"    if (pm.response.code !== 429) {\r",
+							"        var jsonData = pm.response.json();\r",
 							"\r",
-							"    pm.expect(jsonData.created).to.not.be.undefined;\r",
-							"    pm.expect(jsonData.keepAlive).to.not.be.undefined;\r",
-							"    pm.expect(jsonData.name.length).to.eql(4);\r",
-							"    pm.expect(jsonData.host).to.eql(pm.globals.get(\"host\"));\r",
-							"    pm.expect(jsonData.private).to.eql(true);\r",
+							"        pm.expect(jsonData.created).to.not.be.undefined;\r",
+							"        pm.expect(jsonData.keepAlive).to.not.be.undefined;\r",
+							"        pm.expect(jsonData.name.length).to.eql(4);\r",
+							"        pm.expect(jsonData.host).to.eql(pm.globals.get(\"host\"));\r",
+							"        pm.expect(jsonData.private).to.eql(true);\r",
 							"\r",
-							"    pm.globals.set(\"lastName\", jsonData.name);\r",
+							"        pm.globals.set(\"lastName\", jsonData.name);\r",
+							"    }\r",
 							"});\r",
 							""
 						],
@@ -202,20 +208,24 @@
 					"script": {
 						"id": "68a644cb-861f-4bdf-9694-3ca0db1c5fc0",
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 200 or 429\", function () {\r",
+							"    pm.expect([200, 429].includes(pm.response.code)).to.eql(true);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Returns a lobby by name\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
+							"    if (pm.response.code !== 429) {\r",
+							"        var jsonData = pm.response.json();\r",
 							"\r",
-							"    pm.expect(jsonData.name).to.eql(pm.globals.get(\"lastName\"));\r",
+							"        pm.expect(jsonData.name).to.eql(pm.globals.get(\"lastName\"));\r",
+							"    }\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Lobbies have custom data\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
+							"    if (pm.response.code !== 429) {\r",
+							"        var jsonData = pm.response.json();\r",
 							"\r",
-							"    pm.expect(jsonData.data).to.eql(pm.globals.get(\"data\"));\r",
+							"        pm.expect(jsonData.data).to.eql(pm.globals.get(\"data\"));\r",
+							"    }\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -236,7 +246,8 @@
 					"variable": [
 						{
 							"key": "name",
-							"value": "{{lastName}}"
+							"value": "{{lastName}}",
+							"type": "string"
 						}
 					]
 				},
@@ -252,14 +263,16 @@
 					"script": {
 						"id": "9f11c59e-1a4c-4b93-a22c-278fd6b5a19c",
 						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
+							"pm.test(\"Status code is 200 or 429\", function () {\r",
+							"    pm.expect([200, 429].includes(pm.response.code)).to.eql(true);\r",
 							"});\r",
 							"\r",
 							"pm.test(\"Lobby expires is offset by keepAlive interval\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
+							"    if (pm.response.code !== 429) {\r",
+							"        var jsonData = pm.response.json();\r",
 							"\r",
-							"    pm.expect(jsonData.expires).to.be.approximately(jsonData.created + jsonData.keepAlive, 1000);\r",
+							"        pm.expect(jsonData.expires).to.be.approximately(jsonData.created + jsonData.keepAlive, 3000);\r",
+							"    }\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -281,7 +294,8 @@
 					"variable": [
 						{
 							"key": "name",
-							"value": "{{lastName}}"
+							"value": "{{lastName}}",
+							"type": "string"
 						}
 					]
 				},
