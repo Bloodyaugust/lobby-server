@@ -95,7 +95,7 @@ app.post('/lobby/:name', (req, res) => {
     throw new Error('No key provided')
   }
 
-  let lobby = lobbies.find(lobby => lobby.name === req.params.name)
+  const lobby = lobbies.find(lobby => lobby.name === req.params.name)
 
   if (!lobby) {
     throw new Error('Lobby not found')
@@ -105,11 +105,10 @@ app.post('/lobby/:name', (req, res) => {
     throw new Error('Lobby key incorrect')
   }
 
-  lobby = {
-    ...lobby,
+  Object.assign(lobby, {
     data: req.query.data || lobby.data,
     private: req.query.private ? req.query.private === 'true' : lobby.private
-  }
+  })
 
   res.json(formatLobby(lobby))
 })

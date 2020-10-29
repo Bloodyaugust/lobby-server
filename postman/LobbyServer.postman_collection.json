@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "c31ce61d-f09c-4b89-bde5-657621879bae",
+		"_postman_id": "75403ddd-f1c0-456d-9bb8-b9e6bfa5fd12",
 		"name": "LobbyServer",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "3d0b17bb-43ad-440d-8041-1fab8d16fdfb",
+						"id": "c75fcaf8-0db5-4b81-8be6-70239bd94a14",
 						"exec": [
 							"pm.sendRequest(`${pm.environment.get(\"API_ROOT\")}new?host=127.0.0.1&private=true`);\r",
 							"pm.sendRequest(`${pm.environment.get(\"API_ROOT\")}new?host=127.0.0.1`);"
@@ -22,7 +22,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "5944addb-ba1a-4713-9d29-3590f8fc16c1",
+						"id": "b3378752-1250-445c-82d8-a8529645b44e",
 						"exec": [
 							"pm.test(\"Status code is 200 or 429\", function () {\r",
 							"    pm.expect([200, 429].includes(pm.response.code)).to.eql(true);\r",
@@ -62,7 +62,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "4381063b-0d3d-44dc-b814-9d6875a9626e",
+						"id": "5a04189b-9fd8-4e15-bfa1-0e0079f454c2",
 						"exec": [
 							"pm.test(\"Status code is 200 or 429\", function () {\r",
 							"    pm.expect([200, 429].includes(pm.response.code)).to.eql(true);\r",
@@ -92,7 +92,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "669874c1-6868-4d9e-9fcd-f1ae7d5afabd",
+						"id": "b66f72a6-df77-4961-9a67-a52914ca22f9",
 						"exec": [
 							"pm.globals.set(\"host\", \"127.0.0.1\");\r",
 							"pm.globals.set(\"data\", JSON.stringify({\r",
@@ -138,7 +138,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "a1a8a393-77db-4eb0-9cc0-cb44dde3f0bb",
+						"id": "54e71906-ee15-4468-a6be-a7c358ffd429",
 						"exec": [
 							"pm.test(\"Status code is 200 or 429\", function () {\r",
 							"    pm.expect([200, 429].includes(pm.response.code)).to.eql(true);\r",
@@ -167,7 +167,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "d1986a2e-8c5c-446a-a7f6-7b2a5653e0f7",
+						"id": "3f962710-29c3-4d64-a737-390544ec573c",
 						"exec": [
 							"pm.globals.set(\"host\", \"127.0.0.1\");\r",
 							"pm.globals.set(\"data\", JSON.stringify({\r",
@@ -212,7 +212,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "68a644cb-861f-4bdf-9694-3ca0db1c5fc0",
+						"id": "39c6e0d9-7a63-4a0c-a539-29fc4165126d",
 						"exec": [
 							"pm.test(\"Status code is 200 or 429\", function () {\r",
 							"    pm.expect([200, 429].includes(pm.response.code)).to.eql(true);\r",
@@ -252,8 +252,7 @@
 					"variable": [
 						{
 							"key": "name",
-							"value": "{{lastName}}",
-							"type": "string"
+							"value": "{{lastName}}"
 						}
 					]
 				},
@@ -267,7 +266,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "9f11c59e-1a4c-4b93-a22c-278fd6b5a19c",
+						"id": "c2c49b89-0164-47ce-900e-8bb1b4303238",
 						"exec": [
 							"pm.test(\"Status code is 200 or 429\", function () {\r",
 							"    pm.expect([200, 429].includes(pm.response.code)).to.eql(true);\r",
@@ -300,8 +299,7 @@
 					"variable": [
 						{
 							"key": "name",
-							"value": "{{lastName}}",
-							"type": "string"
+							"value": "{{lastName}}"
 						}
 					]
 				},
@@ -315,12 +313,30 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "2abaa95a-db8e-40f3-a2c9-2f647b3425a0",
+						"id": "52530cad-877c-46dd-8d5b-779494b61b8f",
 						"exec": [
 							"pm.globals.set(\"data\", JSON.stringify({",
 							"    map: 'test-map-small',",
 							"    players: 12",
 							"}));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "aaf295f3-8dde-4940-b988-7be006621b80",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Data is set\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(jsonData.data).to.eql(pm.globals.get(\"data\"));\r",
+							"});"
 						],
 						"type": "text/javascript"
 					}
