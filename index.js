@@ -190,6 +190,7 @@ lobbyServer.on('message', (msg, rinfo) => {
     case 'JOIN':
       updatingPeer = udpPeers.find(peer => peer.id === jsonMessage.peerID)
 
+      updatingPeer.lobby = jsonMessage.lobby
       updatingPeer.lobbyAddress = rinfo.address
       updatingPeer.lobbyPort = rinfo.port
 
