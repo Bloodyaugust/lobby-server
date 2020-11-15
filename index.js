@@ -131,6 +131,6 @@ process.on('SIGINT', () => {
 
   server.close(() => {
     console.log('Received SIGINT: Lobby Server shutting down...')
-    process.exit(exitCode)
+    process.exit(0)
   })
 })
