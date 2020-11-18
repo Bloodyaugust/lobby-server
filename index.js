@@ -57,7 +57,7 @@ function lobbyFactory (req) {
     created: dayjs(),
     data: req.query.data || {},
     expires: dayjs().add(...lobbyTimeout),
-    host: req.query.host,
+    host: req.headers['x-forwarded-for'] || req.ip,
     key: crypto.randomBytes(lobbyKeyLength).toString('hex'),
     name: lobbyName,
     private: req.query.private === 'true'
