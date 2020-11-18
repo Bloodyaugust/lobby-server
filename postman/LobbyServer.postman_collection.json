@@ -75,7 +75,7 @@
 							"        pm.expect(jsonData.created).to.not.be.undefined;\r",
 							"        pm.expect(jsonData.keepAlive).to.not.be.undefined;\r",
 							"        pm.expect(jsonData.name.length).to.eql(4);\r",
-							"        pm.expect(jsonData.host).to.eql(pm.globals.get(\"host\"));\r",
+							"        pm.expect(jsonData.host.includes(\"::1\") || jsonData.host.includes(\"127.0.0.1\")).to.eql(true);\r",
 							"        pm.expect(jsonData.private).to.eql(false);\r",
 							"        pm.expect(jsonData.key.length).to.eql(32);\r",
 							"\r",
@@ -108,15 +108,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{API_ROOT}}new?host={{host}}&data={{data}}",
+					"raw": "{{API_ROOT}}new?data={{data}}",
 					"host": [
 						"{{API_ROOT}}new"
 					],
 					"query": [
-						{
-							"key": "host",
-							"value": "{{host}}"
-						},
 						{
 							"key": "data",
 							"value": "{{data}}"
@@ -151,7 +147,7 @@
 							"        pm.expect(jsonData.created).to.not.be.undefined;\r",
 							"        pm.expect(jsonData.keepAlive).to.not.be.undefined;\r",
 							"        pm.expect(jsonData.name.length).to.eql(4);\r",
-							"        pm.expect(jsonData.host).to.eql(pm.globals.get(\"host\"));\r",
+							"        pm.expect(jsonData.host.includes(\"::1\") || jsonData.host.includes(\"127.0.0.1\")).to.eql(true);\r",
 							"        pm.expect(jsonData.private).to.eql(true);\r",
 							"\r",
 							"        pm.globals.set(\"lastKey\", jsonData.key);\r",
@@ -183,15 +179,11 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{API_ROOT}}new?host={{host}}&data={{data}}&private=true",
+					"raw": "{{API_ROOT}}new?data={{data}}&private=true",
 					"host": [
 						"{{API_ROOT}}new"
 					],
 					"query": [
-						{
-							"key": "host",
-							"value": "{{host}}"
-						},
 						{
 							"key": "data",
 							"value": "{{data}}"
@@ -370,7 +362,8 @@
 					"variable": [
 						{
 							"key": "name",
-							"value": "{{lastName}}"
+							"value": "{{lastName}}",
+							"type": "string"
 						}
 					]
 				},
