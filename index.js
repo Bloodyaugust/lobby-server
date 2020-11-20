@@ -15,7 +15,7 @@ const lobbyTimeoutInterval = dayjs().add(...lobbyTimeout).valueOf() - dayjs().va
 
 const getLobbyLimiter = rateLimit({
   windowMs: 60 * 1000,
-  max: process.env.NODE_ENV !== 'production' ? 9999 : 20
+  max: process.env.NODE_ENV !== 'production' ? 9999 : 40
 })
 const keepAliveLimiter = rateLimit({
   windowMs: lobbyTimeoutInterval,
